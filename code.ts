@@ -4,8 +4,16 @@ figma.showUI(__html__);
 figma.ui.onmessage = async (msg: { type: string }) => {
 	if (msg.type === 'create-css-variables') {
 		const cssColorVariables = await createRealColorsCssVariables();
-		console.log(cssColorVariables);
+		const cssVariablesString = cssColorVariables.join('\n');
+		console.log(cssVariablesString);
+
+		figma.ui.postMessage({
+			type: 'css-generated',
+			css: cssColorVariables,
+		});
 	}
 
-	figma.closePlugin();
+	if (msg.type === 'cancel') {
+		figma.closePlugin();
+	}
 };

@@ -1,16 +1,56 @@
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  }
+
+  #loading {
+    opacity: 0;
+  }
+</style>
+
 <h1>CSS Variables</h1>
+<p>This plugin will create CSS variables for the colors in the current page.</p>
+<p
+  id="loading">Generating CSS variables...</p>
 <button
   id="create">Create</button>
 <button
   id="cancel">Cancel</button>
-<script>
+<button
+  id="download"
+  disabled>Download CSS File</button>
 
+<script>
+  let cssVariables = '';
   document.getElementById('create').onclick = () => {
+    document.getElementById('loading').style.opacity = '1';
+    document.getElementById('create').disabled = true;
     parent.postMessage({
       pluginMessage: {
         type: 'create-css-variables'
       }
     }, '*');
+  }
+
+  window.onmessage = (event) => {
+    const msg = event.data.pluginMessage;
+    cssVariables = msg.css.join('\n');
+
+    if (msg.type === 'css-generated') {
+      document.getElementById('loading').style.opacity = '0';
+      document.getElementById('download').disabled = false;
+    }
+  };
+
+  document.getElementById('download').onclick = () => {
+    const blob = new Blob([cssVariables], {
+      type: 'text/css'
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'css-variables.css';
+    a.click();
   }
 
   document.getElementById('cancel').onclick = () => {
