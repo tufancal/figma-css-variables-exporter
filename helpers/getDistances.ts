@@ -52,7 +52,6 @@ const getDistances = () => {
 		if (tShirtIndex >= 0 && tShirtIndex < T_SHIRT_SIZES.length) {
 			const size = T_SHIRT_SIZES[tShirtIndex];
 			distanceMapping[size] = distance;
-			console.log(`--distance-${size}: ${distance};`);
 		}
 	});
 	const distancesVariables = Object.entries(distanceMapping).map(([size, distance]) => `--distance-${size}: ${distance};`);
